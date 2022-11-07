@@ -5,7 +5,7 @@ import itertools
 import pickle
 
 
-operating_system = 'WIN'
+operating_system = 'LIN'
 
 if operating_system=='WIN':
     directory_QREM = os.environ["QREM"] +'\\'
@@ -31,7 +31,7 @@ def Overlap(s1,s2):
     else:
         return 0.5
 def compute_indicator_normalization(dim,setting1,setting2,overlap_dic):
-    return dim*(2*(1- overlap_dic[setting1[1]+setting2[1]]*overlap_dic[setting1[0]+setting2[0]]))
+    return dim*np.sqrt((2*(1- overlap_dic[setting1[1]+setting2[1]]*overlap_dic[setting1[0]+setting2[0]])))
 
 
 settings_list = ['2','3','4','5']
@@ -81,12 +81,6 @@ for subset in subsets:
            normalisation_dictionary[s1 + s2] += 1
 
    coherent_experiment[subset] = [setting_dictionary,normalisation_dictionary]
-   print(subset)
-
-
-
-
-
 
 
 settings_list=[]
@@ -94,9 +88,8 @@ for i in range(2,6):
     for j in range(2,6):
         settings_list.append(str(i)+str(j))
 tvd_dic ={}
-with open(data_directory + file_name, 'rb') as filein:
-    results_data_dictionary = pickle.load(filein)
-for keys, elements in results_data_dictionary.items():
+
+for keys, elements in coherent_experiment.items():
     tvd_value=[]
     tvd_settings=[]
 
@@ -123,7 +116,7 @@ max_id=max_list.index(max_el)
 print(max(max_list))
 print(max_setting[max_id])
 
-file_to_save= "cohernce_indicator_IBM260422.pkl"
+file_to_save= "coherence_indicator_IBM260422.pkl"
 anf.save_results_pickle(dictionary_to_save=tvd_dic,
                            directory=data_directory,
                            custom_name=file_to_save)
