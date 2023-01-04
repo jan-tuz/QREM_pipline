@@ -11,7 +11,7 @@ operating_system = 'WIN'
 
 if operating_system=='WIN':
     directory_QREM = os.environ["QREM"] +'\\'
-    data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data'
+    data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data\\ibm\\'
 elif operating_system=='LIN':
     directory_QREM = '/home/fbm/PycharmProjects/QREM_SECRET_DEVELOPMENT/'
     data_directory = '/home/fbm/Nextcloud/Theory of Quantum Computation/QREM_Data/'
@@ -22,11 +22,15 @@ from functions_qrem import ancillary_functions as anf
 from noise_characterization.data_analysis.InitialNoiseAnalyzer import InitialNoiseAnalyzer
 
 
-data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data\\ibm\\'
+
 
 results_file ='QDOT_counts_IBM_WAS_181122'
 
-with open(data_directory+results_file, 'rb') as filein:
+
+with open(data_directory+'circuits_1200_.pkl', 'rb') as filein:
+    circuits = pickle.load(filein)
+
+with open(data_directory+results_file+'.pkl', 'rb') as filein:
     results_data_dictionary = pickle.load(filein)
 
 results_dictionary = results_data_dictionary['results_dictionary']

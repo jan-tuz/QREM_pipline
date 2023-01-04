@@ -13,7 +13,7 @@ import numpy as np
 from noise_characterization.tomography_design.overlapping.SeparableCircuitsCreator import \
     SeparableCircuitsCreator
 
-from backends_support.qiskit import qiskit_utilities
+from backends_support.qiskit import qiskit_utilitiesy
 from functions_qrem import functions_data_analysis as fdt
 from noise_characterization.tomography_design.overlapping.DOTMarginalsAnalyzer import DOTMarginalsAnalyzer
 
@@ -64,7 +64,7 @@ qubit_indices=get_qubits_below_error_rate(backend.properties(),'x',10**(-3),127)
 number_of_qubits = len(qubit_indices)
 SDK_name = 'qiskit'
 #Chose expeiment type
-experiment_name = 'QDOT'
+experiment_name = 'DDOT'
 
 if experiment_name == 'QDOT':
     number_of_symbols = 6
@@ -72,11 +72,12 @@ elif experiment_name == 'DDOT':
     number_of_symbols = 2
 
 # Specify desired number of circuits
-maximal_circuits_number = 1200
+maximal_circuits_number = 300
 
 OT_creator = OverlappingTomographyBase(number_of_qubits=number_of_qubits,
                                     maximal_circuits_number=maximal_circuits_number,
-                                    experiment_name='QDOT'
+                                    experiment_name='DDOT'
+
                                     )
 circuits_DOT = OT_creator.get_random_circuits_list(number_of_circuits=maximal_circuits_number)
 
@@ -110,9 +111,9 @@ circuits_creator = SeparableCircuitsCreator(SDK_name=SDK_name,
 circuits_per_job=300
 OT_circuits_list = circuits_creator.get_circuits()
 number_of_circuits = len(OT_circuits_list)
-
 for i in range(30):
     print(circuits_DOT[i])
+
 
 number_of_jobs = int(np.ceil(number_of_circuits / circuits_per_job))
 batches = []
@@ -159,7 +160,7 @@ dictionary_to_save_jobs = {'job_IDs_list': job_IDs_list,
                      'metadata':metadata_jobs}
 
 data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data\\ibm'
-file_name_jobs='job_id_ibm_washington_test'
+file_name_jobs='benchmarks_id_IBM_WAS_281122'
 anf.save_results_pickle(dictionary_to_save=dictionary_to_save_jobs,
                                         directory=data_directory,
                                         custom_name=file_name_jobs
@@ -173,7 +174,7 @@ dictionary_to_save = {'circuits_list': circuits_DOT,
                      'metadata':metadata}
 
 
-file_name_circuits = 'QDOT_circuits_IBM_WAS_281122'
+file_name_circuits = 'DDOT_BenchmarkCircuits_IBM_WAS_281122'
 anf.save_results_pickle(dictionary_to_save=dictionary_to_save_jobs,
                                         directory=data_directory,
                                         custom_name=file_name_circuits

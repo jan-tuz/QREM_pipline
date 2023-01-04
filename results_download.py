@@ -9,8 +9,8 @@ from functions_qrem import functions_data_analysis as fdt, ancillary_functions a
 from functions_qrem import functions_standarized_directories as dirs
 
 
-TOKEN='da57aaf4ec4f5d02d587005829816907c93785cfd5686ed380ecadcc2fbfed3cb774837318516fb7099f3806a33ea3292112273254d3d1879768bddfe265d746'
-
+TOKEN='674299712fa3b1c3ade98b860af458c2a26a5fd269ee5e654211cda81a94d630475de6cb91dda83538a36c7cebfd57a40b23a5db2ea818ec88e1443903b65e56'
+IBMQ.save_account(TOKEN, overwrite=True)
 IBMQ.load_account()
 IBMQ.providers()
 
@@ -19,7 +19,7 @@ IBMQ.providers()
 provider_data ={'IBMQ_HUB': 'ibm-q-psnc', 'IBMQ_GROUP': 'internal' , 'IBMQ_PROJECT': 'default' }
 
 data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data\\ibm\\'
-file_name_jobs='circuits_1200'
+file_name_jobs='DDOT_BenchmarkCircuits_IBM_WAS_281122'
 
 with open(data_directory + file_name_jobs+'.pkl', 'rb') as filein:
     dictionary_data_jobs = pickle.load(filein)
@@ -43,5 +43,5 @@ dictionary_to_save_results = {'results_dictionary': processed_results,
 
 anf.save_results_pickle(dictionary_to_save=dictionary_to_save_results,
                                         directory=data_directory,
-                                        custom_name='QDOT_counts_IBM_WAS_181122'
+                                        custom_name='DDOT_counts_IBM_WAS_281122'
                                         )
