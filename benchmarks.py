@@ -1,44 +1,19 @@
 import sys
 import os
 
-directory_QREM = os.environ["QREM"] +'\\'
-sys.path.append(os.path.dirname(directory_QREM))
+operating_system = 'WIN'
+
+if operating_system == 'WIN':
+    directory_QREM = os.environ["QREM"] + '\\'
+    data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data\\ibm\\'
+elif operating_system == 'LIN':
+    directory_QREM = '/home/fbm/PycharmProjects/QREM_SECRET_DEVELOPMENT/'
+    data_directory = '/home/fbm/Nextcloud/Theory of Quantum Computation/QREM_Data/'
+sys.path.append(os.path.dirname(directory_QREM))sys.path.append(os.path.dirname(directory_QREM))
 import pickle
-from noise_characterization.tomography_design.overlapping.DOTMarginalsAnalyzer import \
-    DOTMarginalsAnalyzer
 
-from noise_mitigation.probability_distributions.MarginalsCorrector import MarginalsCorrector
-from noise_mitigation.probability_distributions.CorrectionDataGenerator import \
-    CorrectionDataGenerator
-
-
-from noise_simulation.CN import functions_sampling as fus
-
-from functions_qrem import ancillary_functions as anf
-from functions_qrem import functions_standarized_directories as dirs
-import time
 from functions_qrem import functions_data_analysis as fdt
-from noise_characterization.tomography_design.overlapping.QDTMarginalsAnalyzer import \
-    QDTMarginalsAnalyzer
-from functions_qrem import functions_hamiltonians
 
-from noise_characterization.data_analysis.InitialNoiseAnalyzer import InitialNoiseAnalyzer
-from noise_model_generation.CN.NoiseModelGenerator import NoiseModelGenerator
-
-import numpy as np
-from tqdm import tqdm
-
-from noise_mitigation.probability_distributions.CorrectionDataGenerator import \
-    CorrectionDataGenerator
-
-from noise_characterization.base_classes.OverlappingTomographyBase import OverlappingTomographyBase
-
-from noise_characterization.tomography_design.overlapping.SeparableCircuitsCreator import \
-    SeparableCircuitsCreator
-
-from backends_support.qiskit import qiskit_utilities
-
-from noise_simulation.CN.noise_addition import  add_noise_results_dictionary
 
 from functions_qrem import functions_benchmarks as fun_ben
 
@@ -49,6 +24,21 @@ file_name_results = '' #insert name of a file with full DDOT results 'DDOT_count
 file_name_marginals = ''#insert name of a file with marginals results'DDOT_marginals_IBM_WAS_281122'
 
 file_name_hamiltonians = ''#insert name with hamiltonian data (if generated previously) 'hamiltonians_no_0-299'
+
+with open(data_directory+'hamiltonians\\' + file_name_hamiltonians+'.pkl', 'rb') as filein:
+    hamiltonians_data = pickle.load(filein)
+
+#if Hamiltonians were not generated not use the code beloe
+
+"""
+number_of_qubits - number of qubits unsed in the experiments
+number_of_hamiltonians - equal to number of states prepared in benchmark (DDOT) experiment
+clause_density - I need to figure out this paprameter, it relates to the number of clauses but unsusre how
+ 
+ 
+ hamiltonians_dictionary=fun_ben.create_hamiltonians_for_benchmarks(number_of_qubits= 5,number_of_hamiltonians=,clause_density= 4.0)
+
+"""
 
 directory_results_noise_models = '' #insert path do directory with clusters 'C:\\Users\\Enter\\PycharmProjects\\QREM_SECRET_DEVELOPMENT_LOC\\Tutorials\\clusters\\'
 file_name_noise_models  = '' #insert name of a file with clustering results  "noise_matrices"
@@ -72,11 +62,9 @@ with open(data_directory+'ibm\\' + file_name_marginals+'.pkl', 'rb') as filein:
 
 marginals_dictionary = marginals_dictionary_data['marginals_dictionary']
 
-with open(data_directory+'hamiltonians\\' + file_name_hamiltonians+'.pkl', 'rb') as filein:
-    hamiltonians_data = pickle.load(filein)
 
-#this creates hamiltonians, do not use it if they are loaded from a file
-hamiltonians_dictionary=fun_ben.create_hamiltonians_for_benchmarks(number_of_qubits=5,number_of_hamiltonians=300,clause_density=4.0)
+
+
 #this estimates energy of states created with DDOT for created hamiltonians
 results_energy_estimation= fun_ben.eigenstate_energy_calculation_and_estimationy(results_dictionary,marginals_dictionary,hamiltonians_dictionary)
 
