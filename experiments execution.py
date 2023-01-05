@@ -29,7 +29,7 @@ from functions_qrem import functions_data_analysis as fda
 TOKEN='da57aaf4ec4f5d02d587005829816907c93785cfd5686ed380ecadcc2fbfed3cb774837318516fb7099f3806a33ea3292112273254d3d1879768bddfe265d746'
 
 IBMQ.load_account()
-IBMQ.providers()
+print(IBMQ.providers())
 
 
 

@@ -11,15 +11,22 @@ if operating_system=='WIN':
     data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data'
 elif operating_system=='LIN':
     directory_QREM = '/home/fbm/PycharmProjects/QREM_SECRET_DEVELOPMENT/'
-    data_directory = '/home/fbm/Nextcloud/Theory of Quantum Computation/QREM_Data/'
+    data_directory = '/home/fbm/Nextcloud/Theory of Quantum Computation/QREM_Data/ibm/'
 sys.path.append(os.path.dirname(directory_QREM))
+
+number_of_qubits=109
+locality=2
+
+
+def estimation_precision(number_of_outcomes,number_of_samples):
+    return np.sqrt((np.log(2**number_of_outcomes-2) +np.log(2/3))/(2*number_of_samples))
 
 from functions_qrem import ancillary_functions as anf
 
 def TVD(p,q):
     res =0.
     for p1,q1 in zip(p,q):
-        res+=np.abs(p1-q1)
+        res+=0.5*np.abs(p1-q1)
     return(res)
 
 def Overlap(s1,s2):
@@ -41,7 +48,7 @@ for i in settings_list:
 
 
 
-results_file = 'QDT_marginals3_no_0_IBM260422.pkl'
+results_file = 'QDOT_marginals_IBM_WAS_281122.pkl'
 
 setting_dictionary={}
 normalisation_dictionary={}
@@ -53,8 +60,7 @@ for i in range(2,6):
 
 
 
-
-subsets= anf.get_k_local_subsets(109,2)
+subsets= anf.get_k_local_subsets(number_of_qubits,locality)
 
 with open(data_directory+results_file, 'rb') as filein:
     results_data_dictionary = pickle.load(filein)
@@ -82,6 +88,7 @@ for subset in subsets:
    coherent_experiment[subset] = [setting_dictionary,normalisation_dictionary]
 
 
+
 settings_list=[]
 for i in range(2,6):
     for j in range(2,6):
@@ -96,26 +103,34 @@ for keys, elements in coherent_experiment.items():
         for j in range(i+1,len(settings_list)):
             s1=settings_list[i]
             s2=settings_list[j]
-            indicator = TVD(elements[0][s1]/elements[1][s1],elements[0][s2]/elements[1][s2])
-            indicator = indicator /(compute_indicator_normalization(2,s1,s2,overlap_dictionary))
-            tvd_value.append(indicator)
-            tvd_settings.append((settings_list[i],settings_list[j]))
+
+            #A proper probability vector is obtained here by normalization, we check wheter a particualr combination of Pauli preparations appeared in the experimental data
+            if elements[1][s1]!=0 and elements[1][s2]!=0:
+                indicator = TVD(elements[0][s1] / elements[1][s1], elements[0][s2] / elements[1][s2])
+                indicator = indicator / (compute_indicator_normalization(2, s1, s2, overlap_dictionary))
+                tvd_value.append(indicator)
+                tvd_settings.append((settings_list[i],elements[1][s1],estimation_precision(4,10**4*elements[1][s1]),settings_list[j],elements[1][s2],estimation_precision(4,10**4*elements[1][s2])))
+
+
     tvd_dic[keys]=[tvd_value,tvd_settings]
 
 max_list =[]
 max_setting=[]
-for results in tvd_dic.values():
+sub=[]
+for key, results in tvd_dic.items():
     max_value=max(results[0])
     max_index=results[0].index(max_value)
     max_list.append(max_value)
     max_setting.append(results[1][max_index])
+    sub.append(key)
 
 max_el =max(max_list)
 max_id=max_list.index(max_el)
 print(max(max_list))
 print(max_setting[max_id])
+print(sub[max_id])
 
-file_to_save= "coherence_indicator_IBM260422.pkl"
+file_to_save= "coherence_indicator_IBM_WAS_281122.pkl"
 anf.save_results_pickle(dictionary_to_save=tvd_dic,
                            directory=data_directory,
                            custom_name=file_to_save)

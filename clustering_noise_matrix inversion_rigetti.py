@@ -10,7 +10,7 @@ if operating_system == 'WIN':
     data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data\\ibm\\'
 elif operating_system == 'LIN':
     directory_QREM = '/home/fbm/PycharmProjects/QREM_SECRET_DEVELOPMENT/'
-    data_directory = '/home/fbm/Nextcloud/Theory of Quantum Computation/QREM_Data/'
+    data_directory = '/home/fbm/JM/braket_rigetti_experiments_12-2022/'
 sys.path.append(os.path.dirname(directory_QREM))
 
 from noise_characterization.tomography_design.overlapping.QDTMarginalsAnalyzer import QDTMarginalsAnalyzer
@@ -24,27 +24,34 @@ from noise_model_generation.CN.NoiseModelGenerator import NoiseModelGenerator
 from functions_qrem import functions_data_analysis as fda
 
 # Specify directory where results are saved
-""" 
-Uncomment and specify to read data
 
-number_of_qubits = 
 
-directory_results = ""
+number_of_qubits = 70
 
-file_name_results  = ""
+directory_results = data_directory
 
+file_name_results  = 'QDOT_2022-12-22_processed_results'
+
+metadata_file = '2022-12-22_metadata_whole_script_test'
 
 #read saved results
 with open(directory_results + file_name_results+'.pkl', 'rb') as filein:
-    results_data_dictionary = pickle.load(filein)
+    results_dictionary = pickle.load(filein)
 
-results_dictionary = results_data_dictionary['results_dictionary']
-metadata = results_data_dictionary['metadata']
+#results_dictionary = results_data_dictionary['results_dictionary']
+
+with open(data_directory+metadata_file+'.pkl', 'rb') as filein:
+    metadata = pickle.load(filein)
+
+metadata = metadata['metadata']
+print(len(metadata['physical_qubits']))
 
 
 
 
-file_name_marginals  = ""
+device_name = metadata['backend_name']
+experiment_date = metadata['date']
+file_name_marginals = 'QDOT_marginals_'+device_name + '_' + experiment_date
 #read saved results
 with open(directory_results + file_name_marginals+'.pkl', 'rb') as filein:
     marginals_dictionary_data = pickle.load(filein)
@@ -52,7 +59,7 @@ with open(directory_results + file_name_marginals+'.pkl', 'rb') as filein:
 marginals_dictionary = marginals_dictionary_data['marginals_dictionary']
 
 
-file_name_POVMs  = ""
+file_name_POVMs  = 'QDOT_POVMs_PLS_'+device_name + '_' + experiment_date
 with open(directory_results + file_name_POVMs+'.pkl', 'rb') as filein:
     POVMs_dictionary_data = pickle.load(filein)
 
@@ -62,21 +69,23 @@ else:
     POVMs_dictionary = POVMs_dictionary_data['POVMs_dictionary']
     noise_matrices_dictionary = fda.get_noise_matrices_from_POVMs_dictionary(POVMs_dictionary)
 
+qubit_indices = list(range(len(metadata['physical_qubits'])))
 
-file_name_errors  = ""
+
+file_name_errors  = 'QDOT_correlations_'+device_name  + experiment_date
 
 
 #read saved results
 with open(directory_results + file_name_errors+'.pkl', 'rb') as filein:
     errors_data_dictionary = pickle.load(filein)
 
-errors_data = errors_data_dictionary['errors_data']
-coherence_data = errors_data_dictionary['coherence_data']
+#errors_data = errors_data_dictionary['errors_data']
+#coherence_data = errors_data_dictionary['coherence_data']
 correlations_data = errors_data_dictionary['correlations_data']
 
 metadata = errors_data_dictionary['metadata']
 
-"""
+
 
 noise_model_analyzer = NoiseModelGenerator(results_dictionary=results_dictionary,
                                            marginals_dictionary=marginals_dictionary,
@@ -96,7 +105,6 @@ alpha_hyperparameters = np.linspace(0.0, 3.0, 16)
 alpha_hyperparameters = [np.round(alpha, 3) for alpha in alpha_hyperparameters]
 
 all_clusters_sets_dictionary = {tuple([(qi,) for qi in range(number_of_qubits)]):None}
-
 
 for max_cluster_size in sizes_clusters:
     anf.cool_print("\nCurrent max cluster size:", max_cluster_size, 'red')
@@ -147,19 +155,18 @@ dictionary_to_save = {'noise_matrices_dictionary': noise_matrices_dictionary,
                       'all_clusters_sets_dictionary': all_clusters_sets_dictionary
                       }
 
-"""
-Uncomment to save data 
 
 
-directory_results_noise_models = ""
-file_name_noise_models  = ""
+
+directory_results_noise_models = data_directory
+file_name_noise_models  = 'QDOT_clusters_'+device_name + '_' + experiment_date
 
 anf.save_results_pickle(dictionary_to_save=dictionary_to_save,
                                 directory=directory_results_noise_models,
                                 custom_name=file_name_noise_models)
 
 
-"""
+
 pairs_of_qubits = [(i, j) for i in range(number_of_qubits) for j in range(i + 1, number_of_qubits)]
 
 correction_matrices, correction_indices = fda.get_multiple_mitigation_strategies_clusters_for_pairs_of_qubits(
@@ -175,12 +182,10 @@ dictionary_to_save = {'metadata': metadata,
                       'all_clusters_sets_dictionary': all_clusters_sets_dictionary
                       }
 
-"""
-Uncomment to save data 
-file_name_mitigation  = ""
+
+file_name_mitigation  = 'QDOT_mitigation_'+device_name + '_' + experiment_date
 
 anf.save_results_pickle(dictionary_to_save=dictionary_to_save,
                                 directory= directory_results,
                                 custom_name=file_name_mitigation)
 
-"""
