@@ -8,12 +8,12 @@ from qiskit import IBMQ
 
 
 
-operating_system = 'LIN'
+operating_system = 'WIN'
 
 
 if operating_system=='WIN':
-    directory_QREM = os.environ["QREM"] +'\\'
-    data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data'
+    directory_QREM = os.environ["QREM"] +'\\src\\qrem\\'
+    data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data\\ibm\\'
 elif operating_system=='LIN':
     directory_QREM = '/home/fbm/PycharmProjects/QREM_SECRET_DEVELOPMENT/'
     data_directory = '/home/fbm/Nextcloud/Theory of Quantum Computation/QREM_Data/ibm/'
@@ -47,13 +47,15 @@ for i in range(locality):
 
 
 
-file_name_marginals = 'QDOT_marginals_IBM_WAS_281122'
-with open(data_directory+file_name_marginals +'.pkl', 'rb') as filein:
-    marginals_data_dictionary = pickle.load(filein)
+#file_name_marginals = 'QDOT_marginals_IBM_WAS_281122'
+#with open(data_directory+file_name_marginals +'.pkl', 'rb') as filein:
+#    marginals_data_dictionary = pickle.load(filein)
 
-marginals_dictionary = marginals_data_dictionary['marginals_dictionary']
+#marginals_dictionary = marginals_data_dictionary['marginals_dictionary']
 
-
+ddot_directory = "C:\\Users\\Enter\\Dropbox\\python tests\\"
+with open(ddot_directory+"dictionary_ddot.pkl","rb") as filein:
+    marginals_dictionary = pickle.load(filein )
 
 
 
@@ -65,14 +67,14 @@ marginals_analyzer.initialize_labels_interpreter(interpreter='PAULI')
 #calculate reduced POVMs
 marginals_analyzer.compute_subsets_POVMs_averaged(subset_of_qubits,
                                                            show_progress_bar=True,
-                                                           estimation_method='ML')
+                                                           estimation_method='PLS')
 POVMs_dictionary = marginals_analyzer._POVM_dictionary
 
 dictionary_to_save = {'metadata':metadata,
                      'POVMs_dictionary':POVMs_dictionary}
 
 
-file_name_POVMs  = 'QDOT_POVMs_ML_IBM_WAS_281122.pkl'
+file_name_POVMs  = 'QDOT_POVMs_DDOT_IBM_WAS_281122.pkl'
 
 noise_analyzer = InitialNoiseAnalyzer(results_dictionary,
                                       marginals_dictionary=marginals_dictionary,
@@ -101,7 +103,7 @@ dictionary_to_save = {'correlations_data':correlations_data,
                       'metadata':metadata
                      }
 
-file_name_errors  = 'QDOT_correlations_ML_IBM_WAS_281122.pkl'
+file_name_errors  = 'QDOT_correlations_DDOT_IBM_WAS_281122.pkl'
 anf.save_results_pickle(dictionary_to_save=dictionary_to_save,
                                 directory=data_directory,
                                 custom_name=file_name_errors)
