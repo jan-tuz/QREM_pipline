@@ -7,7 +7,7 @@ if operating_system == 'WIN':
     directory_QREM = os.environ["QREM"] + '\\'
     data_directory = 'C:\\CFT Chmura\\Theory of Quantum Computation\\QREM_Data\\ibm\\'
 elif operating_system == 'LIN':
-    directory_QREM = '/home/fbm/PycharmProjects/QREM_SECRET_DEVELOPMENT/'
+    directory_QREM = '/home/fbm/PycharmProjects/QREM_SECRET_DEVELOPMENT/src/qrem/''
     data_directory = '/home/fbm/Nextcloud/Theory of Quantum Computation/QREM_Data/ibm/'
 sys.path.append(os.path.dirname(directory_QREM))
 import pickle
